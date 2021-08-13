@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLiteBase implements DataService {
-    private CtOnlineReward ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
+    private final CtOnlineReward ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
 
-    public SQLiteBase(){
+    public SQLiteBase() {
         createTable();
     }
 
@@ -33,7 +33,7 @@ public class SQLiteBase implements DataService {
         try {
             connection = getConnection();
             String date = Util.getDate();
-            String sql = "CREATE TABLE IF NOT EXISTS `"+date+"`  (" +
+            String sql = "CREATE TABLE IF NOT EXISTS `" + date + "`  (" +
                     "  `uuid` varchar(255) NOT NULL," +
                     "  `online_data` varchar(255) DEFAULT NULL," +
                     "  PRIMARY KEY (`uuid`) " +
@@ -68,8 +68,8 @@ public class SQLiteBase implements DataService {
     public int getPlayerOnlineTime(Player pLayer) {
         JsonObject playerOnlineData = getPlayerOnlineData(pLayer);
         JsonElement time = playerOnlineData.get("time");
-        if (time == null){
-            insertPlayerOnlineTime(pLayer,0);
+        if (time == null) {
+            insertPlayerOnlineTime(pLayer, 0);
             return 0;
         }
         return time.getAsInt();
@@ -82,13 +82,13 @@ public class SQLiteBase implements DataService {
         try {
             connection = getConnection();
             String date = Util.getDate();
-            String sql = "update `"+date+"` set `online_data` = ? where `uuid` = ?";
+            String sql = "update `" + date + "` set `online_data` = ? where `uuid` = ?";
             ps = connection.prepareStatement(sql);
             JsonObject playerOnlineData = getPlayerOnlineData(player);
             playerOnlineData.addProperty("time", time);
             String asString = playerOnlineData.toString();
             ps.setString(1, asString);
-            ps.setString(2,player.getUniqueId().toString());
+            ps.setString(2, player.getUniqueId().toString());
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,7 +103,7 @@ public class SQLiteBase implements DataService {
         try {
             connection = getConnection();
             String date = Util.getDate();
-            String sql = "select `online_data` from `"+date+"` where `uuid`=?";
+            String sql = "select `online_data` from `" + date + "` where `uuid`=?";
             ps = connection.prepareStatement(sql);
             ps.setString(1, player.getUniqueId().toString());
             rs = ps.executeQuery();
@@ -144,13 +144,13 @@ public class SQLiteBase implements DataService {
     }
 
     @Override
-    public void insertPlayerOnlineTime(Player player,int time) {
+    public void insertPlayerOnlineTime(Player player, int time) {
         Connection connection = null;
         PreparedStatement ps = null;
         try {
             connection = getConnection();
             String date = Util.getDate();
-            String sql = "insert into `"+date+"` (`uuid`,`online_data`) values (?,?)";
+            String sql = "insert into `" + date + "` (`uuid`,`online_data`) values (?,?)";
             ps = connection.prepareStatement(sql);
             ps.setString(1, player.getUniqueId().toString());
             JsonObject jsonObject = new JsonObject();
@@ -163,9 +163,9 @@ public class SQLiteBase implements DataService {
             }
         } catch (Exception e) {
             String message = e.getMessage();
-            if (message.contains("doesn't exist")){
+            if (message.contains("doesn't exist")) {
                 createTable();
-            }else {
+            } else {
                 e.printStackTrace();
             }
         } finally {
@@ -217,7 +217,7 @@ public class SQLiteBase implements DataService {
             playerOnlineData.add("reward", asJsonArray);
             connection = getConnection();
             String date = Util.getDate();
-            String sql = "update `"+date+"` set `online_data` = ? where `uuid` = ?";
+            String sql = "update `" + date + "` set `online_data` = ? where `uuid` = ?";
             ps = connection.prepareStatement(sql);
             ps.setString(1, playerOnlineData.toString());
             ps.setString(2, player.getUniqueId().toString());

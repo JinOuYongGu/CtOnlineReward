@@ -15,37 +15,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RewardSetInventoryMonitor implements Listener {
-    private static RewardSetInventoryMonitor instance = new RewardSetInventoryMonitor();
-    private RewardService rewardService;
-    private RewardSetInventoryMonitor(){
+    private static final RewardSetInventoryMonitor instance = new RewardSetInventoryMonitor();
+    private final RewardService rewardService;
+
+    private RewardSetInventoryMonitor() {
         rewardService = RewardService.getInstance();
     }
 
-    public static RewardSetInventoryMonitor getInstance(){
+    public static RewardSetInventoryMonitor getInstance() {
         return instance;
     }
 
 
     @EventHandler
-    public void Monitor(InventoryClickEvent e){
+    public void Monitor(InventoryClickEvent e) {
         Inventory inventory = e.getInventory();
-        if(inventory == null){
+        if (inventory == null) {
             return;
         }
 
         InventoryHolder holder = inventory.getHolder();
-        if(!(holder instanceof RewardSetInventoryHolder)){
+        if (!(holder instanceof RewardSetInventoryHolder)) {
             return;
         }
         int rawSlot = e.getRawSlot();
-        if(rawSlot <= 44 && rawSlot >= 36){
+        if (rawSlot <= 44 && rawSlot >= 36) {
             e.setCancelled(true);
         }
-        if(rawSlot == 40){
+        if (rawSlot == 40) {
             List<ItemStack> itemStacks = new ArrayList<>();
             for (int i = 0; i < 36; i++) {
                 ItemStack item = inventory.getItem(i);
-                if (item != null && item.getType() != Material.AIR){
+                if (item != null && item.getType() != Material.AIR) {
                     itemStacks.add(inventory.getItem(i));
                 }
             }
@@ -53,8 +54,8 @@ public class RewardSetInventoryMonitor implements Listener {
             RewardData rewardData = new RewardData(itemStacks);
 
             boolean b = rewardService.saveRewardDate(rewardData, reward);
-            if(b){
-                ((Player)e.getWhoClicked()).sendMessage("§a§l● "+reward+"奖励数据保存成功!");
+            if (b) {
+                e.getWhoClicked().sendMessage("§a§l● " + reward + "奖励数据保存成功!");
             }
             e.getWhoClicked().closeInventory();
         }

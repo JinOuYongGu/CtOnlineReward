@@ -9,13 +9,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
 public class RewardService {
-    private static RewardService instance = new RewardService();
+    private static final RewardService instance = new RewardService();
     CtOnlineReward ctOnlineReward;
 
     private RewardService() {
@@ -30,12 +29,12 @@ public class RewardService {
     public List<ItemStack> getItemStackFromRewardId(String rewardId) {
         YamlConfiguration rewardYaml = YamlData.rewardYaml;
         Set<String> rewardYamlKeys = rewardYaml.getKeys(false);
-        if(!rewardYamlKeys.contains(rewardId)){
+        if (!rewardYamlKeys.contains(rewardId)) {
             return null;
         }
         ConfigurationSection rewardIdYaml = rewardYaml.getConfigurationSection(rewardId);
         Set<String> rewardIdYamlKeys = rewardIdYaml.getKeys(false);
-        if(!rewardIdYamlKeys.contains("rewardData")){
+        if (!rewardIdYamlKeys.contains("rewardData")) {
             return null;
         }
         String rewardData = rewardIdYaml.getString("rewardData");
@@ -43,7 +42,7 @@ public class RewardService {
         return getItemStackFromFile(file1);
     }
 
-    public List<ItemStack> getItemStackFromFile(File file){
+    public List<ItemStack> getItemStackFromFile(File file) {
         Logger logger = ctOnlineReward.getLogger();
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
@@ -52,17 +51,17 @@ public class RewardService {
             SerializableUtil serializableUtil = new SerializableUtil();
             RewardData rewardData = serializableUtil.singleObjectFromByteArray(bFile, RewardData.class);
             return rewardData.getRewardList();
-        }catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             String message = e.getMessage();
             boolean b = message.contains("系统找不到指定的文件");
-            if(b){
+            if (b) {
                 int i = message.indexOf("(系统找不到指定的文件。)");
                 System.out.println(i);
                 String substring = message.substring(34, i);
                 ctOnlineReward.getLogger().warning("§c§l■ 找不到奖励数据!");
-                ctOnlineReward.getLogger().warning("§c§l■ 请使用/cor reward set "+substring+"设置奖励数据!");
+                ctOnlineReward.getLogger().warning("§c§l■ 请使用/cor reward set " + substring + "设置奖励数据!");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             logger.warning("§c§l■ 奖励数据读取失败!");
         }

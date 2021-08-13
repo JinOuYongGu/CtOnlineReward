@@ -2,7 +2,6 @@ package cn.ctcraft.ctonlinereward.database;
 
 import com.google.gson.JsonArray;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;

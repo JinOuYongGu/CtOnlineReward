@@ -10,18 +10,17 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class CommandHandler implements CommandExecutor {
-    private static CommandHandler instance = new CommandHandler();
-    private CtOnlineReward ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
-    private CommandExecute commandExecute = CommandExecute.getInstance();
-
-    public static CommandHandler getInstance() {
-        return instance;
-    }
+    private static final CommandHandler instance = new CommandHandler();
+    private final CtOnlineReward ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
+    private final CommandExecute commandExecute = CommandExecute.getInstance();
 
     private CommandHandler() {
 
     }
 
+    public static CommandHandler getInstance() {
+        return instance;
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -59,7 +58,7 @@ public class CommandHandler implements CommandExecutor {
             if (args[0].equalsIgnoreCase("remind") && args.length == 2) {
                 if (args[1].equalsIgnoreCase("on")) {
                     List<Player> players = RemindTimer.players;
-                    if (players.contains((Player)sender)) {
+                    if (players.contains((Player) sender)) {
                         players.remove(sender);
                     }
                     sender.sendMessage("§a§l成功打开提醒！");
@@ -67,7 +66,7 @@ public class CommandHandler implements CommandExecutor {
                 }
                 if (args[1].equalsIgnoreCase("off")) {
                     List<Player> players = RemindTimer.players;
-                    if (!players.contains((Player)sender)) {
+                    if (!players.contains((Player) sender)) {
                         players.add((Player) sender);
                     }
                     sender.sendMessage("§c§l成功关闭提醒!");

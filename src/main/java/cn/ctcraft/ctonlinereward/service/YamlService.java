@@ -2,22 +2,22 @@ package cn.ctcraft.ctonlinereward.service;
 
 import cn.ctcraft.ctonlinereward.CtOnlineReward;
 import cn.ctcraft.ctonlinereward.database.YamlData;
-import cn.ctcraft.ctonlinereward.utils.Util;
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
 public class YamlService {
-    private static YamlService instance = new YamlService();
-    private CtOnlineReward ctOnlineReward;
+    private static final YamlService instance = new YamlService();
+    private final CtOnlineReward ctOnlineReward;
 
     private YamlService() {
         ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
@@ -86,7 +86,7 @@ public class YamlService {
             Set<String> keys1 = configurationSection.getKeys(false);
             if (keys1.contains("remind")) {
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.add("reward",new JsonPrimitive(key));
+                jsonObject.add("reward", new JsonPrimitive(key));
                 JsonElement jsonElement = new JsonPrimitive(configurationSection.getBoolean("remind", false));
                 jsonObject.add("remind", jsonElement);
                 if (keys1.contains("permission")) {

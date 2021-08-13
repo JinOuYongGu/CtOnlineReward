@@ -34,55 +34,55 @@ import com.udojava.evalex.Expression.LazyNumber;
 public interface LazyOperator {
 
 
-  /**
-   * Gets the String that is used to denote the operator in the expression.
-   *
-   * @return The String that is used to denote the operator in the expression.
-   */
-  String getOper();
+    /**
+     * Gets the String that is used to denote the operator in the expression.
+     *
+     * @return The String that is used to denote the operator in the expression.
+     */
+    String getOper();
 
 
-  /**
-   * Gets the precedence value of this operator.
-   *
-   * @return the precedence value of this operator.
-   */
-  int getPrecedence();
+    /**
+     * Gets the precedence value of this operator.
+     *
+     * @return the precedence value of this operator.
+     */
+    int getPrecedence();
 
 
-  /**
-   * Gets whether this operator is left associative (<code>true</code>) or if this operator is right
-   * associative (<code>false</code>).
-   *
-   * @return <code>true</code> if this operator is left associative.
-   */
-  boolean isLeftAssoc();
+    /**
+     * Gets whether this operator is left associative (<code>true</code>) or if this operator is right
+     * associative (<code>false</code>).
+     *
+     * @return <code>true</code> if this operator is left associative.
+     */
+    boolean isLeftAssoc();
 
 
-  /**
-   * Gets whether this operator evaluates to a boolean expression.
-   *
-   * @return <code>true</code> if this operator evaluates to a boolean
-   * expression.
-   */
-  boolean isBooleanOperator();
+    /**
+     * Gets whether this operator evaluates to a boolean expression.
+     *
+     * @return <code>true</code> if this operator evaluates to a boolean
+     * expression.
+     */
+    boolean isBooleanOperator();
 
 
-  /**
-   * Gets whether this operator is unary or not.
-   *
-   * @return <code>true</code> if this operator expects 1 operand, otherwise
-   * <code>false</code> if this operator expects 2 operands.
-   */
-  boolean isUnaryOperator();
+    /**
+     * Gets whether this operator is unary or not.
+     *
+     * @return <code>true</code> if this operator expects 1 operand, otherwise
+     * <code>false</code> if this operator expects 2 operands.
+     */
+    boolean isUnaryOperator();
 
 
-  /**
-   * Implementation for this operator.
-   *
-   * @param v1 Operand 1.
-   * @param v2 Operand 2.
-   * @return The result of the operation.
-   */
-  LazyNumber eval(LazyNumber v1, LazyNumber v2);
+    /**
+     * Implementation for this operator.
+     *
+     * @param v1 Operand 1.
+     * @param v2 Operand 2.
+     * @return The result of the operation.
+     */
+    LazyNumber eval(LazyNumber v1, LazyNumber v2);
 }

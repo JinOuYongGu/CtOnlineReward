@@ -121,7 +121,7 @@ public final class CtOnlineReward extends JavaPlugin {
 
 
         final long time = System.currentTimeMillis() - timestamp;
-        Bukkit.getConsoleSender().sendMessage(ChatColor.WHITE+"["+ChatColor.GREEN+"在线奖励"+ChatColor.WHITE+"]"+ChatColor.GREEN+" > "+ChatColor.WHITE+ "插件加载完成,共耗时"+ChatColor.GREEN+ time + "ms"+ChatColor.WHITE+".");
+        Bukkit.getConsoleSender().sendMessage(ChatColor.WHITE + "[" + ChatColor.GREEN + "在线奖励" + ChatColor.WHITE + "]" + ChatColor.GREEN + " > " + ChatColor.WHITE + "插件加载完成,共耗时" + ChatColor.GREEN + time + "ms" + ChatColor.WHITE + ".");
     }
 
     public void load() {
@@ -166,8 +166,8 @@ public final class CtOnlineReward extends JavaPlugin {
         }
 
         File placeholderFile = new File(getDataFolder() + "/placeholder.yml");
-        if (!placeholderFile.exists()){
-            saveResource("placeholder.yml",false);
+        if (!placeholderFile.exists()) {
+            saveResource("placeholder.yml", false);
         }
         placeholder = new YamlConfiguration();
         try {

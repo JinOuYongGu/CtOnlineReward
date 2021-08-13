@@ -2,7 +2,6 @@ package cn.ctcraft.ctonlinereward.inventory;
 
 import cn.ctcraft.ctonlinereward.CtOnlineReward;
 import cn.ctcraft.ctonlinereward.RewardEntity;
-import cn.ctcraft.ctonlinereward.database.DataService;
 import cn.ctcraft.ctonlinereward.database.YamlData;
 import cn.ctcraft.ctonlinereward.service.RewardStatus;
 import cn.ctcraft.ctonlinereward.service.YamlService;
@@ -13,7 +12,6 @@ import me.albert.skullapi.SkullAPI;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.SkullType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -30,19 +28,24 @@ import java.util.regex.Pattern;
 
 public class InventoryFactory {
     private Player player;
-    private Map<ItemStack,RewardEntity> map = new HashMap<>();
-    private MainInventoryHolder mainInventoryHolder = new MainInventoryHolder();
-    private YamlService yamlService = YamlService.getInstance();
-    private CtOnlineReward ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
+    private final Map<ItemStack, RewardEntity> map = new HashMap<>();
+    private final MainInventoryHolder mainInventoryHolder = new MainInventoryHolder();
+    private final YamlService yamlService = YamlService.getInstance();
+    private final CtOnlineReward ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
 
     public static Inventory build(String inventoryId, Player player) {
         return new InventoryFactory().getInventory(inventoryId, player);
     }
 
+    private static boolean isInteger(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        return pattern.matcher(str).matches();
+    }
+
     private Inventory getInventory(String inventoryId, Player player) {
         this.player = player;
         Map<String, YamlConfiguration> guiYaml = YamlData.guiYaml;
-        if(!guiYaml.containsKey(inventoryId)){
+        if (!guiYaml.containsKey(inventoryId)) {
             player.sendMessage("§c§l菜单不存在!");
             player.closeInventory();
         }
@@ -63,42 +66,42 @@ public class InventoryFactory {
             ItemStack valueItemStack = getValueItemStack(value);
             Set<String> keys1 = value.getKeys(false);
 
-            if(keys1.contains("index")){
+            if (keys1.contains("index")) {
                 List<Integer> indexs = new ArrayList<>();
                 Object index = value.get("index");
-                if (index instanceof Integer){
+                if (index instanceof Integer) {
                     indexs.add((Integer) index);
-                }else{
+                } else {
                     String x = value.getString("index.x");
                     String y = value.getString("index.y");
                     indexs = Position.get(x, y);
                 }
                 for (Integer integer : indexs) {
-                    inventory.setItem(integer,valueItemStack);
+                    inventory.setItem(integer, valueItemStack);
                 }
-                if(keys1.contains("mode")){
+                if (keys1.contains("mode")) {
                     String mode = value.getString("mode");
                     Map<Integer, String> modeMap = mainInventoryHolder.modeMap;
                     for (Integer integer : indexs) {
-                        modeMap.put(integer,mode);
+                        modeMap.put(integer, mode);
                     }
-                    if(mode.equalsIgnoreCase("reward")){
+                    if (mode.equalsIgnoreCase("reward")) {
                         RewardEntity rewardEntity = map.get(valueItemStack);
                         Map<Integer, RewardEntity> statusMap = mainInventoryHolder.statusMap;
                         for (Integer integer : indexs) {
-                            statusMap.put(integer,rewardEntity);
+                            statusMap.put(integer, rewardEntity);
                         }
                     }
-                    if(mode.equalsIgnoreCase("command")){
+                    if (mode.equalsIgnoreCase("command")) {
                         ConfigurationSection configurationSection = getItemStackCommand(value);
                         for (Integer integer : indexs) {
-                            mainInventoryHolder.commandMap.put(integer,configurationSection);
+                            mainInventoryHolder.commandMap.put(integer, configurationSection);
                         }
                     }
-                    if(mode.equalsIgnoreCase("gui")){
-                        if(keys1.contains("gui")){
+                    if (mode.equalsIgnoreCase("gui")) {
+                        if (keys1.contains("gui")) {
                             for (Integer integer : indexs) {
-                                mainInventoryHolder.guiMap.put(integer,value.getString("gui"));
+                                mainInventoryHolder.guiMap.put(integer, value.getString("gui"));
                             }
                         }
                     }
@@ -109,9 +112,9 @@ public class InventoryFactory {
         }
     }
 
-    private ConfigurationSection getItemStackCommand(ConfigurationSection value){
+    private ConfigurationSection getItemStackCommand(ConfigurationSection value) {
         Set<String> keys = value.getKeys(false);
-        if(!keys.contains("command")){
+        if (!keys.contains("command")) {
             return null;
         }
         return value.getConfigurationSection("command");
@@ -121,32 +124,31 @@ public class InventoryFactory {
         Set<String> keys = value.getKeys(false);
         ItemStack itemStack = getItemStackType(null, value);
         ItemMeta itemMeta = itemStack.hasItemMeta() ? itemStack.getItemMeta() : Bukkit.getItemFactory().getItemMeta(itemStack.getType());
-        itemMetaHandler(value,itemMeta);
+        itemMetaHandler(value, itemMeta);
         itemStack.setItemMeta(itemMeta);
-        if(!keys.contains("mode")){
+        if (!keys.contains("mode")) {
             return itemStack;
         }
         String mode = value.getString("mode");
-        if(mode.equalsIgnoreCase("reward")){
-            if(keys.contains("rewardId")){
-                extendHandler(itemStack,value,value.getString("rewardId"));
+        if (mode.equalsIgnoreCase("reward")) {
+            if (keys.contains("rewardId")) {
+                extendHandler(itemStack, value, value.getString("rewardId"));
             }
         }
 
         return itemStack;
     }
 
-
-    private void extendHandler(ItemStack itemStack,ConfigurationSection value,String rewardId) {
+    private void extendHandler(ItemStack itemStack, ConfigurationSection value, String rewardId) {
         Set<String> keys = value.getKeys(false);
-        if(!keys.contains("extend")){
+        if (!keys.contains("extend")) {
             return;
         }
         RewardStatus rewardStatus = getRewardStatus(player, rewardId);
         RewardEntity rewardEntity = new RewardEntity(rewardId, rewardStatus);
         ConfigurationSection extend = value.getConfigurationSection("extend");
 
-        switch (rewardStatus){
+        switch (rewardStatus) {
             case before:
                 ConfigurationSection before = extend.getConfigurationSection("before");
                 itemStack = getItemStackType(itemStack, before);
@@ -168,56 +170,56 @@ public class InventoryFactory {
                 itemMetaHandler(activation, itemMeta3);
                 itemStack.setItemMeta(itemMeta3);
         }
-        map.put(itemStack,rewardEntity);
+        map.put(itemStack, rewardEntity);
     }
 
-    private ItemStack getItemStackType(ItemStack itemStack,ConfigurationSection config){
+    private ItemStack getItemStackType(ItemStack itemStack, ConfigurationSection config) {
 
         Set<String> keys = config.getKeys(false);
-        if(!keys.contains("type")){
+        if (!keys.contains("type")) {
             CtOnlineReward plugin = CtOnlineReward.getPlugin(CtOnlineReward.class);
             config = plugin.getConfig().getConfigurationSection("Setting.defaultItemType");
         }
         ConfigurationSection type = config.getConfigurationSection("type");
         Set<String> typeKeys = type.getKeys(false);
-        if(typeKeys.contains("name")){
+        if (typeKeys.contains("name")) {
             String name = type.getString("name");
-            if (name.equalsIgnoreCase("skull")){
+            if (name.equalsIgnoreCase("skull")) {
                 String skull = type.getString("skull");
                 itemStack = SkullAPI.getSkull(skull);
             }
-            if(itemStack == null){
+            if (itemStack == null) {
                 itemStack = new ItemStack(getItemStackByNMS(name));
-            }else {
+            } else {
                 itemStack.setType(getItemStackByNMS(name).getType());
             }
         }
-        if(itemStack == null){
+        if (itemStack == null) {
             itemStack = new ItemStack(Material.CHEST);
         }
-        if (itemStack.getType() == Material.AIR){
+        if (itemStack.getType() == Material.AIR) {
             itemStack = new ItemStack(Material.CHEST);
         }
-        if(typeKeys.contains("enchantment")){
+        if (typeKeys.contains("enchantment")) {
             boolean enchantment = type.getBoolean("enchantment");
-            if(enchantment){
-                itemStack.addUnsafeEnchantment(Enchantment.DURABILITY,1);
-            }else{
+            if (enchantment) {
+                itemStack.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+            } else {
                 itemStack.removeEnchantment(Enchantment.DURABILITY);
             }
         }
         return itemStack;
     }
 
-    private ItemStack getItemStackByNMS(String name){
-        if (isInteger(name)){
+    private ItemStack getItemStackByNMS(String name) {
+        if (isInteger(name)) {
             return new ItemStack(Material.getMaterial(Integer.parseInt(name)));
         }
 
         String[] split = name.split(":");
-        if (split[0].equalsIgnoreCase("minecraft")){
+        if (split[0].equalsIgnoreCase("minecraft")) {
             Material material = Material.getMaterial(split[1].toUpperCase());
-            if (material != null){
+            if (material != null) {
                 return new ItemStack(material);
             }
         }
@@ -232,57 +234,52 @@ public class InventoryFactory {
             Class<?> craftItemStack = Class.forName("org.bukkit.craftbukkit." + versionString + ".inventory.CraftItemStack");
             Method asBukkitCopy = craftItemStack.getMethod("asBukkitCopy", itemStackClass);
             return (ItemStack) asBukkitCopy.invoke(craftItemStack, nmsItemStack);
-        }catch (Exception e){
-            throw new RuntimeException("GUI物品材质名称配置错误!",e);
+        } catch (Exception e) {
+            throw new RuntimeException("GUI物品材质名称配置错误!", e);
         }
     }
 
-    private static boolean isInteger(String str) {
-        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
-        return pattern.matcher(str).matches();
-    }
-
-    private void itemMetaHandler(ConfigurationSection config,ItemMeta itemMeta){
+    private void itemMetaHandler(ConfigurationSection config, ItemMeta itemMeta) {
         Set<String> configKeys = config.getKeys(false);
-        if(configKeys.contains("name")){
+        if (configKeys.contains("name")) {
             String name = config.getString("name").replace("&", "§");
             String s = PlaceholderAPI.setPlaceholders(player, name);
             itemMeta.setDisplayName(s);
         }
-        if(configKeys.contains("lore")){
+        if (configKeys.contains("lore")) {
             List<String> lore = config.getStringList("lore");
-            lore.replaceAll(a->a.replace("&","§"));
+            lore.replaceAll(a -> a.replace("&", "§"));
             List<String> list = PlaceholderAPI.setPlaceholders(player, lore);
             itemMeta.setLore(list);
         }
-        if (itemMeta instanceof SkullMeta && configKeys.contains("skull")){
+        if (itemMeta instanceof SkullMeta && configKeys.contains("skull")) {
             String skull = config.getString("skull");
             boolean b = ((SkullMeta) itemMeta).setOwner("d9afe148-2b93-4ad9-9326-a965824c2428");
-            if (!b){
+            if (!b) {
                 ctOnlineReward.getLogger().warning("§c§l 头颅读取失败！");
             }
         }
     }
 
-    private RewardStatus getRewardStatus(Player player,String rewardId){
+    private RewardStatus getRewardStatus(Player player, String rewardId) {
         ConfigurationSection configurationSection = YamlData.rewardYaml.getConfigurationSection(rewardId);
-        if (configurationSection == null){
-            ctOnlineReward.getLogger().warning("§c§l■ 未找到奖励配置 §f§n" + rewardId+"§c§l 请检查reward.yml配置文件中是否有指定配置!");
+        if (configurationSection == null) {
+            ctOnlineReward.getLogger().warning("§c§l■ 未找到奖励配置 §f§n" + rewardId + "§c§l 请检查reward.yml配置文件中是否有指定配置!");
             return RewardStatus.before;
         }
         Set<String> keys = configurationSection.getKeys(false);
-        if(!keys.contains("time")){
+        if (!keys.contains("time")) {
             return RewardStatus.before;
         }
         boolean timeIsOk = RewardOnlineTimeHandler.getInstance().onlineTimeIsOk(player, configurationSection.getString("time"));
-        if(!timeIsOk) {
+        if (!timeIsOk) {
             return RewardStatus.before;
         }
         List<String> playerRewardArray = CtOnlineReward.dataService.getPlayerRewardArray(player);
-        if(playerRewardArray.size() == 0){
+        if (playerRewardArray.size() == 0) {
             return RewardStatus.activation;
         }
-        if(!playerRewardArray.contains(rewardId)){
+        if (!playerRewardArray.contains(rewardId)) {
             return RewardStatus.activation;
         }
         return RewardStatus.after;

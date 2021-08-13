@@ -11,10 +11,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 
 public class AfkTimer extends BukkitRunnable {
-    private static CtOnlineReward ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
-    private Map<String, Map<String, Double>> locationMap = new HashMap<>();
-    private AfkService afkService = AfkService.getInstance();
-    private boolean strong = AfkService.getInstance().isStrongMode();
+    private static final CtOnlineReward ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
+    private final Map<String, Map<String, Double>> locationMap = new HashMap<>();
+    private final AfkService afkService = AfkService.getInstance();
+    private final boolean strong = AfkService.getInstance().isStrongMode();
 
     @Override
     public void run() {
@@ -44,27 +44,27 @@ public class AfkTimer extends BukkitRunnable {
                         && oldLocationMap.get("z") == location.getZ();
                 boolean see = oldLocationMap.get("pitch") == location.getPitch() && oldLocationMap.get("yaw") == location.getYaw();
 
-                if (!xyz){
+                if (!xyz) {
                     boolean afk = afkService.isAfk(player);
                     if (afk) {
                         afkService.removeAfk(player);
                     }
-                }else{
-                    if (strong){
-                        if (!see){
+                } else {
+                    if (strong) {
+                        if (!see) {
                             boolean afk = afkService.isAfk(player);
                             if (!afk) {
                                 afkService.setAfk(player);
                             }
                         }
                     }
-                    if (see){
+                    if (see) {
                         boolean afk = afkService.isAfk(player);
                         if (!afk) {
                             afkService.setAfk(player);
                         }
-                    }else{
-                        if (!strong){
+                    } else {
+                        if (!strong) {
                             boolean afk = afkService.isAfk(player);
                             if (afk) {
                                 afkService.removeAfk(player);

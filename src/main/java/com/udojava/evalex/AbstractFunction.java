@@ -27,6 +27,7 @@
 package com.udojava.evalex;
 
 import com.udojava.evalex.Expression.LazyNumber;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,51 +39,51 @@ import java.util.List;
  */
 public abstract class AbstractFunction extends AbstractLazyFunction implements Function {
 
-  /**
-   * Creates a new function with given name and parameter count.
-   *
-   * @param name      The name of the function.
-   * @param numParams The number of parameters for this function.
-   *                  <code>-1</code> denotes a variable number of parameters.
-   */
-  protected AbstractFunction(String name, int numParams) {
-    super(name, numParams);
-  }
+    /**
+     * Creates a new function with given name and parameter count.
+     *
+     * @param name      The name of the function.
+     * @param numParams The number of parameters for this function.
+     *                  <code>-1</code> denotes a variable number of parameters.
+     */
+    protected AbstractFunction(String name, int numParams) {
+        super(name, numParams);
+    }
 
-  /**
-   * Creates a new function with given name and parameter count.
-   *
-   * @param name            The name of the function.
-   * @param numParams       The number of parameters for this function.
-   *                        <code>-1</code> denotes a variable number of parameters.
-   * @param booleanFunction Whether this function is a boolean function.
-   */
-  protected AbstractFunction(String name, int numParams, boolean booleanFunction) {
-    super(name, numParams, booleanFunction);
-  }
+    /**
+     * Creates a new function with given name and parameter count.
+     *
+     * @param name            The name of the function.
+     * @param numParams       The number of parameters for this function.
+     *                        <code>-1</code> denotes a variable number of parameters.
+     * @param booleanFunction Whether this function is a boolean function.
+     */
+    protected AbstractFunction(String name, int numParams, boolean booleanFunction) {
+        super(name, numParams, booleanFunction);
+    }
 
-  public LazyNumber lazyEval(final List<LazyNumber> lazyParams) {
-    return new LazyNumber() {
+    public LazyNumber lazyEval(final List<LazyNumber> lazyParams) {
+        return new LazyNumber() {
 
-      private List<BigDecimal> params;
+            private List<BigDecimal> params;
 
-      public BigDecimal eval() {
-        return AbstractFunction.this.eval(getParams());
-      }
+            public BigDecimal eval() {
+                return AbstractFunction.this.eval(getParams());
+            }
 
-      public String getString() {
-        return String.valueOf(AbstractFunction.this.eval(getParams()));
-      }
+            public String getString() {
+                return String.valueOf(AbstractFunction.this.eval(getParams()));
+            }
 
-      private List<BigDecimal> getParams() {
-        if (params == null) {
-          params = new ArrayList<BigDecimal>();
-          for (LazyNumber lazyParam : lazyParams) {
-            params.add(lazyParam.eval());
-          }
-        }
-        return params;
-      }
-    };
-  }
+            private List<BigDecimal> getParams() {
+                if (params == null) {
+                    params = new ArrayList<BigDecimal>();
+                    for (LazyNumber lazyParam : lazyParams) {
+                        params.add(lazyParam.eval());
+                    }
+                }
+                return params;
+            }
+        };
+    }
 }

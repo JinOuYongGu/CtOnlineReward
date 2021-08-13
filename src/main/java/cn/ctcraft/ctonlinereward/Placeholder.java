@@ -3,7 +3,6 @@ package cn.ctcraft.ctonlinereward;
 import cn.ctcraft.ctonlinereward.database.DataService;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.udojava.evalex.Expression;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.ChatColor;
@@ -16,14 +15,12 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class Placeholder extends PlaceholderExpansion {
     private final CtOnlineReward ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
     private final DataService playerDataService = CtOnlineReward.dataService;
-    private JsonObject papijson = new JsonObject();
+    private final JsonObject papijson = new JsonObject();
 
     public Placeholder() {
         YamlConfiguration placeholderYaml = CtOnlineReward.placeholder;
@@ -76,7 +73,8 @@ public class Placeholder extends PlaceholderExpansion {
         if (has) {
             JsonElement jsonElement = papijson.get(params);
             JsonObject asJsonObject = jsonElement.getAsJsonObject();
-            String type = asJsonObject.get("type").getAsString();boolean hasFormula = asJsonObject.has("formula");
+            String type = asJsonObject.get("type").getAsString();
+            boolean hasFormula = asJsonObject.has("formula");
             if (hasFormula) {
                 ScriptEngine javaScript = new ScriptEngineManager().getEngineByName("JavaScript");
                 String formula = asJsonObject.get("formula").getAsString();
@@ -98,13 +96,13 @@ public class Placeholder extends PlaceholderExpansion {
                         throw new IllegalStateException("Unexpected value: " + type);
                 }
                 try {
-                    if (javaScript == null){
+                    if (javaScript == null) {
                         Expression expression = new Expression(newFormula);
                         BigDecimal eval = expression.eval();
-                        return String.format("%.2f",eval);
+                        return String.format("%.2f", eval);
                     }
                     Object eval = javaScript.eval(newFormula);
-                    if (eval instanceof Double){
+                    if (eval instanceof Double) {
                         return String.format("%.2f", eval);
                     }
                     return String.valueOf(eval);

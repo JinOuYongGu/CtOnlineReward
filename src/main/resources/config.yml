@@ -49,9 +49,7 @@ Setting:
     #是否打开在线提醒
     use: true
     remindValues:
-      -
-        OnlineTime: 10
+      - OnlineTime: 10
         Message: '&a你已经在线10分钟了，注意休息哦～'
-      -
-        OnlineTime: 20
+      - OnlineTime: 20
         Message: '&a你已经在线20分钟了，适当游戏怡情，不要时间太长哦～'

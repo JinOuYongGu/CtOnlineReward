@@ -10,7 +10,6 @@ import cn.ctcraft.ctonlinereward.inventory.MainInventoryHolder;
 import cn.ctcraft.ctonlinereward.service.RewardService;
 import cn.ctcraft.ctonlinereward.service.RewardStatus;
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.milkbowl.vault.economy.EconomyResponse;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -19,22 +18,20 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import javax.xml.ws.Holder;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 
 public class InventoryMonitor implements Listener {
-    private RewardService rewardService = RewardService.getInstance();
-    private CtOnlineReward ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
+    private final RewardService rewardService = RewardService.getInstance();
+    private final CtOnlineReward ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
     private InventoryHolder holder = null;
 
     @EventHandler
@@ -337,10 +334,6 @@ public class InventoryMonitor implements Listener {
             }
         }
 
-        if (itemStacks.size() > emptySize) {
-            return false;
-        } else {
-            return true;
-        }
+        return itemStacks.size() <= emptySize;
     }
 }

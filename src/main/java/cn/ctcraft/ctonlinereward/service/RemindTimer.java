@@ -16,11 +16,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 public class RemindTimer extends BukkitRunnable {
+    public static List<Player> players = new ArrayList<>();
     private final CtOnlineReward ctOnlineReward;
-     public static List<Player> players = new ArrayList<>();
 
     public RemindTimer() {
         ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
@@ -36,8 +39,8 @@ public class RemindTimer extends BukkitRunnable {
                 boolean remind = asJsonObject.get("remind").getAsBoolean();
                 if (remind) {
                     if (asJsonObject.has("permission")) {
-                        sendMessage(asJsonObject.get("permission").getAsString(),asJsonObject.get("reward").getAsString());
-                    }else {
+                        sendMessage(asJsonObject.get("permission").getAsString(), asJsonObject.get("reward").getAsString());
+                    } else {
                         sendMessage(asJsonObject.get("reward").getAsString());
                     }
                 }
@@ -48,16 +51,16 @@ public class RemindTimer extends BukkitRunnable {
     }
 
     private void sendMessage(String rewardId) {
-        sendMessage(null,rewardId);
+        sendMessage(null, rewardId);
     }
 
     private void sendMessage(String permission, String rewardId) {
         Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
         for (Player onlinePlayer : onlinePlayers) {
-            if (permission != null && !onlinePlayer.hasPermission(permission)){
+            if (permission != null && !onlinePlayer.hasPermission(permission)) {
                 return;
             }
-            if (players.contains(onlinePlayer)){
+            if (players.contains(onlinePlayer)) {
                 return;
             }
             boolean b = hasNotReceivedReward(onlinePlayer, rewardId);
@@ -71,8 +74,8 @@ public class RemindTimer extends BukkitRunnable {
                     for (BaseComponent baseComponent : parse1) {
                         onlinePlayer.spigot().sendMessage(baseComponent);
                     }
-                }else{
-                    onlinePlayer.sendMessage(message.replace("&","§"));
+                } else {
+                    onlinePlayer.sendMessage(message.replace("&", "§"));
                 }
             }
         }
@@ -82,13 +85,13 @@ public class RemindTimer extends BukkitRunnable {
         YamlConfiguration rewardYaml = YamlData.rewardYaml;
         ConfigurationSection configurationSection = rewardYaml.getConfigurationSection(rewardId);
         Set<String> keys = configurationSection.getKeys(false);
-        if (!keys.contains("time")){
+        if (!keys.contains("time")) {
             return false;
         }
         boolean timeIsOk = RewardOnlineTimeHandler.getInstance().onlineTimeIsOk(player, configurationSection.getString("time"));
-        if (timeIsOk){
+        if (timeIsOk) {
             List<String> playerRewardArray = CtOnlineReward.dataService.getPlayerRewardArray(player);
-            if(playerRewardArray.size() == 0){
+            if (playerRewardArray.size() == 0) {
                 return true;
             }
             return !playerRewardArray.contains(rewardId);

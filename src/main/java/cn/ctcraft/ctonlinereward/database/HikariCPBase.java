@@ -52,7 +52,7 @@ public class HikariCPBase {
 
     }
 
-    public HikariDataSource getSqlConnectionPool(){
+    public HikariDataSource getSqlConnectionPool() {
         return sqlConnectionPool;
     }
 

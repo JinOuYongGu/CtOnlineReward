@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.UUID;
 
 public class OnlineTimer extends BukkitRunnable {
-    private static OnlineTimer instance = new OnlineTimer();
-    private static HashMap<UUID, Long> onlinePlayerTime = new HashMap<>();
-    private DataService dataService = CtOnlineReward.dataService;
-    private CtOnlineReward ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
+    private static final OnlineTimer instance = new OnlineTimer();
+    private static final HashMap<UUID, Long> onlinePlayerTime = new HashMap<>();
+    private final DataService dataService = CtOnlineReward.dataService;
+    private final CtOnlineReward ctOnlineReward = CtOnlineReward.getPlugin(CtOnlineReward.class);
 
     private OnlineTimer() {
     }

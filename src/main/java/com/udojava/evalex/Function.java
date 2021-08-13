@@ -34,12 +34,12 @@ import java.util.List;
  */
 public interface Function extends LazyFunction {
 
-  /**
-   * Implementation for this function.
-   *
-   * @param parameters Parameters will be passed by the expression evaluator as a {@link List} of
-   *                   {@link BigDecimal} values.
-   * @return The function must return a new {@link BigDecimal} value as a computing result.
-   */
-  BigDecimal eval(List<BigDecimal> parameters);
+    /**
+     * Implementation for this function.
+     *
+     * @param parameters Parameters will be passed by the expression evaluator as a {@link List} of
+     *                   {@link BigDecimal} values.
+     * @return The function must return a new {@link BigDecimal} value as a computing result.
+     */
+    BigDecimal eval(List<BigDecimal> parameters);
 }

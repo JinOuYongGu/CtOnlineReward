@@ -6,17 +6,17 @@ public enum ActionType {
     Message,
     openGUI;
 
-    public static ActionType getActionType(String actionContent){
-        if (actionContent.contains("[closeGUI]")){
+    public static ActionType getActionType(String actionContent) {
+        if (actionContent.contains("[closeGUI]")) {
             return closeGUI;
         }
-        if (actionContent.contains("[sound]")){
+        if (actionContent.contains("[sound]")) {
             return sound;
         }
-        if (actionContent.contains("[Message]")){
+        if (actionContent.contains("[Message]")) {
             return Message;
         }
-        if (actionContent.contains("openGUI")){
+        if (actionContent.contains("openGUI")) {
             return openGUI;
         }
         return null;

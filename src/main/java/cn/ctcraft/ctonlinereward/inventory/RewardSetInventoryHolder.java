@@ -6,7 +6,7 @@ import org.bukkit.inventory.InventoryHolder;
 public class RewardSetInventoryHolder implements InventoryHolder {
     private String reward;
 
-    public RewardSetInventoryHolder(String reward){
+    public RewardSetInventoryHolder(String reward) {
         this.reward = reward;
     }
 
