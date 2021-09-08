@@ -43,25 +43,38 @@ public class CommandExecute {
     }
 
     public void openInventory(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("§c■ 该命令仅能在游戏中使用");
+            return;
+        }
+
+        Player player = (Player) sender;
+
         if (args.length == 1) {
-            Inventory menu = InventoryFactory.build("menu.yml", (Player) sender);
-            ((Player) sender).openInventory(menu);
+            Inventory menu = InventoryFactory.build("menu.yml", player);
+            player.openInventory(menu);
             return;
         }
         if (args.length == 2) {
             Map<String, YamlConfiguration> guiYaml = YamlData.guiYaml;
             if (!guiYaml.containsKey(args[1])) {
-                sender.sendMessage("§c■ 未找到指定菜单!");
+                player.sendMessage("§c■ 未找到指定菜单!");
                 return;
             }
             try {
-                boolean b = sender.hasPermission("CtOnlineReward.open." + args[1]);
-                if (!b) {
-                    sender.sendMessage("§c■ 权限不足!");
+                if (!player.hasPermission("CtOnlineReward.open." + args[1])) {
+                    player.sendMessage("§c■ 权限不足!");
                     return;
                 }
-                Inventory build = InventoryFactory.build(args[1], (Player) sender);
-                ((Player) sender).openInventory(build);
+
+                Inventory menu = InventoryFactory.build(args[1], (Player) sender);
+                if (menu == null) {
+                    player.sendMessage("§c§l菜单不存在!");
+                    player.closeInventory();
+                    return;
+                }
+
+                player.openInventory(menu);
             } catch (Exception e) {
                 ctOnlineReward.getLogger().warning("§c■ " + args[1] + "菜单配置异常!");
                 e.printStackTrace();

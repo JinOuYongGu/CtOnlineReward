@@ -212,8 +212,9 @@ public class InventoryFactory {
     }
 
     private ItemStack getItemStackByNMS(String name) {
-        if (isInteger(name)) {
-            return new ItemStack(Material.getMaterial(Integer.parseInt(name)));
+        if (!name.contains(":")) {
+            ctOnlineReward.getLogger().info("§e有物品类型名称格式错误 请检查配置文件");
+            return new ItemStack(Material.getMaterial("BARRIER"));
         }
 
         String[] split = name.split(":");

@@ -50,7 +50,7 @@ public class RewardSetInventory {
 
     private Map<Integer, ItemStack> getFrameItemStackMap() {
         Map<Integer, ItemStack> map = new HashMap<>();
-        ItemStack itemStack = new ItemStack(Material.STAINED_GLASS_PANE);
+        ItemStack itemStack = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta itemMeta = itemStack.hasItemMeta() ? itemStack.getItemMeta() : Bukkit.getItemFactory().getItemMeta(itemStack.getType());
         itemMeta.setDisplayName("-");
         itemStack.setItemMeta(itemMeta);
